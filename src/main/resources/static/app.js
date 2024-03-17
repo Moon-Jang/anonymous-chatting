@@ -1,17 +1,36 @@
 const roomId = 1;
 const userId = Math.floor(Math.random() * 1000000) + '-' + (+new Date());
+const domain = 'today-menu-api.gguge.com';
 
 const stompClient = new StompJs.Client({
-    brokerURL: 'ws://localhost:8080/sample-chatting'
+    brokerURL: `wss://${domain}/sample-chatting`
 });
 
-stompClient.onConnect = (frame) => {
+stompClient.onConnect = async (frame) => {
     setConnected(true);
     console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/receive-message', (greeting) => {
+
+    await stompClient.subscribe('/topic/receive-message', (greeting) => {
         console.log("greeting: ", greeting);
         const message = JSON.parse(greeting.body);
         addMessage(message);
+    });
+
+    await createUser();
+    const messages = await fetchMessages();
+
+    messages.forEach((message) => {
+        addMessage(message);
+    });
+
+    const payload = {
+        roomId,
+        userId
+    }
+
+    await stompClient.publish({
+        destination: "/app/enter",
+        body: JSON.stringify(payload)
     });
 };
 
@@ -37,23 +56,7 @@ function setConnected(connected) {
 }
 
 async function connect() {
-    await createUser();
-    stompClient.activate();
-    const messages = await fetchMessages();
-
-    messages.forEach((message) => {
-        addMessage(message);
-    });
-
-    const payload = {
-        roomId,
-        userId
-    }
-
-    await stompClient.publish({
-        destination: "/app/enter",
-        body: JSON.stringify(payload)
-    });
+    await stompClient.activate();
 }
 
 function disconnect() {
@@ -90,7 +93,7 @@ $(function () {
 
 async function fetchMessages() {
     try {
-        const endpoint = 'http://localhost:8080/api/v1/rooms/1/messages';
+        const endpoint = `https://${domain}/api/v1/rooms/1/messages`;
         const response = await fetch(endpoint);
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -105,7 +108,7 @@ async function fetchMessages() {
 
 async function createUser() {
     try {
-        const endpoint = 'http://localhost:8080/api/v1/users';
+        const endpoint = `https://${domain}/api/v1/users`;
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
