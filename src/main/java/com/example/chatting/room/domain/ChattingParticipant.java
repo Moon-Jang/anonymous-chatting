@@ -22,10 +22,15 @@ public class ChattingParticipant extends BaseEntity {
     @Column(nullable = false)
     private String userId;
 
+    @Column(nullable = false)
+    private String name;
+
     @Column
     private LocalDateTime deletedAt;
 
-    public ChattingParticipant(String userId) {
+    public ChattingParticipant(String userId,
+                               String name) {
         this.userId = userId;
+        this.name = name;
     }
 }

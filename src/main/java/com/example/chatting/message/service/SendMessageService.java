@@ -31,7 +31,8 @@ public class SendMessageService {
             requirement.roomId(),
             requirement.userId(),
             requirement.content(),
-            ChattingMessage.MessageType.TEXT,
+            ChattingMessage.MessageType.CHAT,
+            ChattingMessage.ContentType.TEXT,
             ChattingMessage.SenderType.USER
         );
     }

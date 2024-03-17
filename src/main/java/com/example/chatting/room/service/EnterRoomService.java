@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class EnterRoomService {
@@ -17,22 +19,30 @@ public class EnterRoomService {
     private final UserRepository userRepository;
 
     @Transactional
-    public MessageVo enter(long roomId,
-                           String userId) {
+    public Optional<MessageVo> enter(long roomId,
+                                    String userId) {
         var room = chattingRoomRepository.findById(roomId).orElseThrow();
         var user = userRepository.findById(userId).orElseThrow();
-        room.enter(user.id());
+
+        if (room.isParticipant(user.id())) {
+            return Optional.empty();
+        }
+
+        room.enter(user);
         chattingRoomRepository.save(room);
 
         var message = new ChattingMessage(
             roomId,
-            "SYSTEM",
+            user.id(),
             user.name() + "님이 입장하셨습니다.",
-            ChattingMessage.MessageType.TEXT,
+            ChattingMessage.MessageType.ENTER,
+            ChattingMessage.ContentType.TEXT,
             ChattingMessage.SenderType.SYSTEM
         );
         var savedMessage = chattingMessageRepository.save(message);
 
-        return MessageVo.from(savedMessage);
+        return Optional.of(
+            MessageVo.from(savedMessage)
+        );
     }
 }

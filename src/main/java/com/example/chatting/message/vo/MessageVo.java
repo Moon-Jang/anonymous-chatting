@@ -8,6 +8,7 @@ public record MessageVo(
     String userId,
     String content,
     ChattingMessage.MessageType messageType,
+    ChattingMessage.ContentType contentType,
     ChattingMessage.SenderType senderType
 ) {
     public static MessageVo from(ChattingMessage message) {
@@ -17,6 +18,7 @@ public record MessageVo(
             message.userId(),
             message.content(),
             message.messageType(),
+            message.contentType(),
             message.senderType()
         );
     }

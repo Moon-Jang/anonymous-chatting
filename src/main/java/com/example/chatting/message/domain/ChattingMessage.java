@@ -33,21 +33,34 @@ public class ChattingMessage extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    private ContentType contentType;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private SenderType senderType;
 
     public ChattingMessage(long roomId,
                            String userId,
                            String content,
                            MessageType messageType,
+                           ContentType contentType,
                            SenderType senderType) {
         this.roomId = roomId;
         this.userId = userId;
         this.content = content;
         this.messageType = messageType;
+        this.contentType = contentType;
         this.senderType = senderType;
     }
 
     public enum MessageType{
+        ENTER,
+        CHAT,
+        LEAVE,
+        NOTICE
+    }
+
+    public enum ContentType{
         TEXT,
         FILE
     }

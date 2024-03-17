@@ -17,14 +17,14 @@ public class CreateRoomService {
 
     public void create(Requirement requirement) {
         var user  = userRepository.findById(requirement.userId()).orElseThrow();
-        var participant = new ChattingParticipant(user.id());
+        var participant = new ChattingParticipant(user.id(), user.name());
         var chattingRoom = new ChattingRoom(
             requirement.title(),
             requirement.isPrivate(),
             List.of(participant)
         );
 
-        chattingRoom.enter(user.id());
+        chattingRoom.enter(user);
         chattingRoomRepository.save(chattingRoom);
     }
 

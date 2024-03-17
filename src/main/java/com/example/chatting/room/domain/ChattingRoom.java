@@ -1,6 +1,7 @@
 package com.example.chatting.room.domain;
 
 import com.example.chatting.common.entity.BaseEntity;
+import com.example.chatting.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,17 +43,19 @@ public class ChattingRoom extends BaseEntity {
         this.participants = participants;
     }
 
-    public void enter(String userId) {
-        var alreadyEnter = participants.stream()
-            .map(ChattingParticipant::userId)
-            .anyMatch(userId::equals);
-
-        if (alreadyEnter) {
+    public void enter(User user) {
+        if (isParticipant(user.id())) {
             return;
         }
 
         participants.add(
-            new ChattingParticipant(userId)
+            new ChattingParticipant(user.id(), user.name())
         );
+    }
+
+    public boolean isParticipant(String userId) {
+        return participants.stream()
+            .map(ChattingParticipant::userId)
+            .anyMatch(userId::equals);
     }
 }
