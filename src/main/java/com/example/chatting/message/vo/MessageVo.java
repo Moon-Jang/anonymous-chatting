@@ -2,6 +2,8 @@ package com.example.chatting.message.vo;
 
 import com.example.chatting.message.domain.ChattingMessage;
 
+import java.time.LocalDateTime;
+
 public record MessageVo(
     long id,
     long roomId,
@@ -9,7 +11,8 @@ public record MessageVo(
     String content,
     ChattingMessage.MessageType messageType,
     ChattingMessage.ContentType contentType,
-    ChattingMessage.SenderType senderType
+    ChattingMessage.SenderType senderType,
+    LocalDateTime createdAt
 ) {
     public static MessageVo from(ChattingMessage message) {
         return new MessageVo(
@@ -19,7 +22,8 @@ public record MessageVo(
             message.content(),
             message.messageType(),
             message.contentType(),
-            message.senderType()
+            message.senderType(),
+            message.createdAt()
         );
     }
 }
