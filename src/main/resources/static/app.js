@@ -1,9 +1,9 @@
 const roomId = 2;
 const userId = Math.floor(Math.random() * 1000000) + '-' + (+new Date());
-const domain = 'localhost:8080';
+const domain = 'today-menu-api.gguge.com';
 
 const stompClient = new StompJs.Client({
-    brokerURL: `ws://${domain}/sample-chatting`
+    brokerURL: `wss://${domain}/sample-chatting`
 });
 
 stompClient.onConnect = async (frame) => {
@@ -93,7 +93,7 @@ $(function () {
 
 async function fetchMessages(roomId) {
     try {
-        const endpoint = `http://${domain}/api/v1/rooms/${roomId}/messages`;
+        const endpoint = `https://${domain}/api/v1/rooms/${roomId}/messages`;
         const response = await fetch(endpoint);
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -108,7 +108,7 @@ async function fetchMessages(roomId) {
 
 async function createUser() {
     try {
-        const endpoint = `http://${domain}/api/v1/users`;
+        const endpoint = `https://${domain}/api/v1/users`;
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
